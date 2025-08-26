@@ -1,0 +1,6 @@
+gradio==5.43.1
+python-dotenv==1.1.0
+langchain-google-genai==2.1.9
+langchain==0.3.27
+langgraph==0.6.6
+pydantic-settings==2.10.1
