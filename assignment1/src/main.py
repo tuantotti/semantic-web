@@ -39,7 +39,7 @@ async def response(message: str, history: List[ChatMessage]):
 
 demo = gr.ChatInterface(
     response,
-    title="GraphRAG",
+    title="FEBMS Chatbot",
     type="messages",
 )
 

@@ -1,6 +1,12 @@
 gradio==5.43.1
 python-dotenv==1.1.0
 langchain-google-genai==2.1.9
+langchain-neo4j==0.5.0
+langchain-milvus==0.2.1
 langchain==0.3.27
 langgraph==0.6.6
 pydantic-settings==2.10.1
+langchain-huggingface==0.3.1
+pyvi==0.1.1
+torch==2.8.0
+sentence-transformers==5.1.0

@@ -2,6 +2,7 @@ ANSWER_GENERATOR_PROMPT = """You are an assistant that helps to form nice and hu
 The information part contains the provided information that you must use to construct an answer.
 The provided information is authoritative, you must never doubt it or try to use your internal knowledge to correct it.
 Make the answer sound as a response to the question. Do not mention that you based the result on the given information.
+Your answer should be in Vietnamese language.
 Here is an example:
 
 Question: Which managers own Neo4j stocks?

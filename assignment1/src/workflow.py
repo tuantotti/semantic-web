@@ -1,8 +1,9 @@
 import dotenv
 from langchain_google_genai import GoogleGenerativeAI
-from langchain_neo4j import GraphCypherQAChain, Neo4jGraph
+from langchain_milvus import Milvus
+from langchain_neo4j import Neo4jGraph
+from langchain_openai import AzureOpenAIEmbeddings
 from langgraph.graph import END, START, StateGraph
-
 from src.configs import settings
 from src.generators import AnswerGenerator, Text2Cypher
 from src.retrievers import KnowledgeRetriever
@@ -12,7 +13,19 @@ dotenv.load_dotenv(override=True)
 
 
 # init models
-llm = GoogleGenerativeAI(model="gemma-3-27b-it", temperature=0.0, max_tokens=8096)
+llm = GoogleGenerativeAI(
+    model="gemma-3-27b-it",
+    temperature=0.0,
+    max_tokens=8096,
+)
+
+embeddings = AzureOpenAIEmbeddings(
+    azure_deployment=settings.EMBEDDING_DEPLOYMENT_NAME,
+    model=settings.EMBEDDING_MODEL_NAME,
+    azure_endpoint=settings.EMBEDDING_AZURE_ENDPOINT,
+    api_version=settings.EMBEDDING_API_VERSION,
+    api_key=settings.EMBEDDING_AZURE_OPENAI_API_KEY,
+)
 
 neo4j = Neo4jGraph(
     url=settings.NEO4J_URL,
@@ -22,11 +35,18 @@ neo4j = Neo4jGraph(
     enhanced_schema=True,
 )
 
-neo4j.get_structured_schema
+milvus = Milvus(
+    embedding_function=embeddings,
+    enable_dynamic_field=True,
+    auto_id=True,
+    connection_args={"uri": settings.MILVUS_URI, "token": settings.MILVUS_TOKEN},
+    collection_name=settings.MILVUS_COLLECTION_NAME,
+)
+
 # init tasks
 knowledge_retriever = KnowledgeRetriever(graph_db=neo4j)
 answer_generator = AnswerGenerator(llm=llm)
-text2cypher = Text2Cypher(llm=llm, graph_db=neo4j)
+text2cypher = Text2Cypher(llm=llm, graph_db=neo4j, vector_db=milvus)
 
 
 # define workflow
